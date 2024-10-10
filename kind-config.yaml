@@ -1,0 +1,20 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: tlsdemo-cluster
+networking:
+  apiServerAddress: 0.0.0.0   # One user had a problem with not being able to connect to api when it defaultet to 127.0.0.1. Related: https://stackoverflow.com/q/54940990/686131
+  apiServerPort: 46443        # Ensures a non-windows-reserved port is used. Documentation: https://kind.sigs.k8s.io/docs/user/configuration/#api-server
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+
+  # Dette trengs for å eksponere portene på selve kind-docker-containeren, altså ikke kubernetes. 
+  extraPortMappings:
+  # http
+  - containerPort: 80   # innsiden
+    hostPort: 40080     # utsiden

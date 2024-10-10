@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: weather-gateway
+  name: weather-gateway
+  namespace: tls-demo
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+  selector:
+    app: weather-gateway

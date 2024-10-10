@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: weather-gateway
+  name: weather-gateway
+  namespace: tls-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-gateway
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: weather-gateway
+    spec:
+      containers:
+      - image: tls-demo:latest
+        imagePullPolicy: IfNotPresent
+        name: weather-gateway
+        ports: 
+        - containerPort: 8080
+          name: http
+        env:
+        - name: NEXT_URL
+          value: "http://weather-server.tls-demo.svc.cluster.local/weatherforecast"
+        - name: ASPNETCORE_HTTP_PORTS 
+          value: "8080"
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: weather-server
+  name: weather-server
+  namespace: tls-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: weather-server
+    spec:
+      volumes:
+       - name: https-certificates
+         secret:
+           secretName: weather-server-certificate 
+      containers:
+      - image: tls-demo:latest
+        imagePullPolicy: IfNotPresent
+        name: weather-server
+        ports: 
+        - containerPort: 8443
+          name: https
+        env:
+        - name: ASPNETCORE_Kestrel__Endpoints__Https__Url
+          value: "https://*:8443"
+        - name: ASPNETCORE_Kestrel__Endpoints__Https__Certificate__Path
+          value: "/https/certificates/tls.crt"
+        - name: ASPNETCORE_Kestrel__Endpoints__Https__Certificate__KeyPath
+          value: "/https/certificates/tls.key"
+        volumeMounts:
+        - name: https-certificates
+          mountPath: /https/certificates
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
