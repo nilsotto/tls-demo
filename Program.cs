@@ -28,6 +28,15 @@ internal class Program
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<Program>();
 
+        app.MapGet("/healthz", async (context) =>
+        {
+           var content = "Alt OK";
+           await context.Response.WriteAsync(content);
+        })
+        .WithName("/healthz")
+        .WithOpenApi();
+
+        
         app.MapGet("/", async (context) =>
         {
             //check if the value of environment variable NEXT_URL is set, call Url if it is 

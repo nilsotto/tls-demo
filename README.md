@@ -8,7 +8,7 @@
 docker pull kindest/node:v1.31.0
 helm repo add jetstack https://charts.jetstack.io --force-update
 
-kind create cluster --config kind-config.yaml --image kindest/node:v1.31.0
+kind create cluster --config tls-demo-kind-config.yaml --image kindest/node:v1.31.0
 
 docker pull quay.io/jetstack/cert-manager-controller:v1.15.3
 docker pull quay.io/jetstack/cert-manager-startupapicheck:v1.15.3
@@ -18,6 +18,8 @@ docker pull quay.io/jetstack/cert-manager-acmesolver:v1.15.3
 docker pull quay.io/jetstack/cert-manager-startupapicheck:v1.15.3
 docker pull quay.io/jetstack/cert-manager-package-debian:20210119.0
 docker pull quay.io/jetstack/trust-manager:v0.12.0
+docker pull registry.k8s.io/ingress-nginx/controller:v1.11.2
+docker pull registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.3
 
 kind -n tlsdemo-cluster load docker-image quay.io/jetstack/cert-manager-controller:v1.15.3
 kind -n tlsdemo-cluster load docker-image quay.io/jetstack/cert-manager-startupapicheck:v1.15.3
@@ -26,10 +28,14 @@ kind -n tlsdemo-cluster load docker-image quay.io/jetstack/cert-manager-cainject
 kind -n tlsdemo-cluster load docker-image quay.io/jetstack/cert-manager-acmesolver:v1.15.3
 kind -n tlsdemo-cluster load docker-image quay.io/jetstack/cert-manager-package-debian:20210119.0
 kind -n tlsdemo-cluster load docker-image quay.io/jetstack/trust-manager:v0.12.0
-
+kind -n tlsdemo-cluster load docker-image registry.k8s.io/ingress-nginx/controller:v1.11.2
+kind -n tlsdemo-cluster load docker-image registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.4.3
 docker build -t tls-demo:latest .
 kind load docker-image tls-demo:latest -n tlsdemo-cluster
 kubectl create ns tls-demo
+
+kubectl apply -n ingress-nginx -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+
 ```
 
 # Demo

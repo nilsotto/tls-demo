@@ -13,7 +13,10 @@ metadata:
 spec:
   isCA: true
   duration: 175200h
-  commonName: my-selfsigned-ca
+  commonName: demo-cluster.localtest.me
+  subject:
+    organizations:
+      - containerkonferansen
   secretName: ca-certificate-secret
   privateKey:
     algorithm: ECDSA
