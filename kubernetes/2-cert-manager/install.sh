@@ -8,5 +8,4 @@ helm install \
   
   helm upgrade trust-manager jetstack/trust-manager \
   --install \
-  --namespace cert-manager \
-  --wait
+  --namespace cert-manager
